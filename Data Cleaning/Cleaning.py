@@ -157,12 +157,18 @@ playoffs_files = []
 
 for file in os.listdir(clean_data_dir):
     if "Reg Season" in file:
-        reg_season_files.append(pd.read_csv(os.path.join(clean_data_dir, file)))
+        df = pd.read_csv(os.path.join(clean_data_dir, file))
+        year = file.split()[0]  # Extract the year from the file name
+        df.insert(0, 'Year', year)  # Add the year as the leftmost column
+        reg_season_files.append(df)
     elif "Playoffs" in file:
-        playoffs_files.append(pd.read_csv(os.path.join(clean_data_dir, file)))
+        df = pd.read_csv(os.path.join(clean_data_dir, file))
+        year = file.split()[0]  # Extract the year from the file name
+        df.insert(0, 'Year', year)  # Add the year as the leftmost column
+        playoffs_files.append(df)
 
 def process_and_save(df, output_file_name):
-    # Sort by Game ID, Quarter, and Player ID
+        # Sort by Game ID, Quarter, and Player ID
     df = df.sort_values(by=['Game ID', 'Quarter', 'Player ID']).reset_index(drop=True)
 
     # Recode "Closest Defender Distance" column
@@ -224,4 +230,3 @@ if playoffs_files:
 end_time = time.time()
 elapsed_time = end_time - start_time
 print(f"Script finished running in {elapsed_time:.2f} seconds.")
-
